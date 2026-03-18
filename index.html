@@ -20,18 +20,6 @@
     --transition-theme: background 0.35s ease, color 0.35s ease, border-color 0.35s ease;
   }
 
-  [data-theme="dark"] {
-    --ink: #f0ece4;
-    --cream: #111110;
-    --warm: #1a1917;
-    --accent: #e05a20;
-    --gold: #d4a84c;
-    --steel: #a8a097;
-    --light-ink: #d0ccc4;
-    --border: #2e2c29;
-    --nav-bg: rgba(17,17,16,0.92);
-  }
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   html { scroll-behavior: smooth; }
@@ -752,87 +740,6 @@
   .delay-3 { animation-delay: 0.45s; opacity: 0; }
   .delay-4 { animation-delay: 0.6s; opacity: 0; }
 
-  /* ── THEME TOGGLE ── */
-  .theme-toggle {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    background: none;
-    border: 1.5px solid var(--border);
-    border-radius: 999px;
-    padding: 0.38rem 0.9rem 0.38rem 0.5rem;
-    cursor: pointer;
-    transition: border-color 0.25s, background 0.25s;
-    color: var(--steel);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    flex-shrink: 0;
-  }
-
-  .theme-toggle:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .theme-toggle .toggle-track {
-    width: 34px;
-    height: 18px;
-    background: var(--border);
-    border-radius: 999px;
-    position: relative;
-    transition: background 0.3s;
-    flex-shrink: 0;
-  }
-
-  [data-theme="dark"] .theme-toggle .toggle-track {
-    background: var(--accent);
-  }
-
-  .theme-toggle .toggle-thumb {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--cream);
-    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.3s;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
-  }
-
-  [data-theme="dark"] .theme-toggle .toggle-thumb {
-    transform: translateX(16px);
-    background: #fff;
-  }
-
-  .theme-toggle .toggle-icon {
-    font-size: 0.95rem;
-    line-height: 1;
-    transition: transform 0.4s ease;
-  }
-
-  [data-theme="dark"] .theme-toggle .toggle-icon {
-    transform: rotate(180deg);
-  }
-
-  .toggle-label-light { display: inline; }
-  .toggle-label-dark  { display: none; }
-  [data-theme="dark"] .toggle-label-light { display: none; }
-  [data-theme="dark"] .toggle-label-dark  { display: inline; }
-
-  /* Dark mode overrides for inline styles that use hardcoded colours */
-  [data-theme="dark"] .markets-section { background: #0d0d0c; }
-  [data-theme="dark"] .contact-section { background: #0d0d0c; }
-  [data-theme="dark"] footer { background: #080807; }
-  [data-theme="dark"] .hero-right { background: #1a1917; }
-  [data-theme="dark"] .hero-badge { background: var(--warm); color: var(--ink); }
-  [data-theme="dark"] .marquee-bar { background: #0d0d0c; }
-  [data-theme="dark"] .about-section { background: var(--warm); }
-  [data-theme="dark"] #serviceModal { background: rgba(0,0,0,0.92); }
-  [data-theme="dark"] #serviceModalInner { background: var(--cream); }
-
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
     nav { padding: 1.2rem 2rem; }
@@ -851,8 +758,6 @@
     .container { padding: 0 2rem; }
     footer { flex-direction: column; gap: 0.5rem; text-align: center; }
     .skills-grid { grid-template-columns: 1fr; }
-    .theme-toggle .toggle-label-light,
-    .theme-toggle .toggle-label-dark { display: none; }
   }
 </style>
 </head>
@@ -869,12 +774,6 @@
     <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">
-    <div class="toggle-track"><div class="toggle-thumb"></div></div>
-    <span class="toggle-icon">☀️</span>
-    <span class="toggle-label-light">Light</span>
-    <span class="toggle-label-dark">Dark</span>
-  </button>
 </nav>
 
 <!-- HERO -->
@@ -1127,35 +1026,6 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') closeService();
 });
 </script>
-
-<script>
-  /* ── THEME TOGGLE ── */
-  const html = document.documentElement;
-
-  // Check saved preference, then system preference
-  function getInitialTheme() {
-    const saved = localStorage.getItem('nmk-theme');
-    if (saved) return saved;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }
-
-  function applyTheme(theme) {
-    html.setAttribute('data-theme', theme);
-    localStorage.setItem('nmk-theme', theme);
-    // Update toggle icon
-    const icon = document.querySelector('.toggle-icon');
-    if (icon) icon.textContent = theme === 'dark' ? '🌙' : '☀️';
-  }
-
-  function toggleTheme() {
-    const current = html.getAttribute('data-theme') || 'light';
-    applyTheme(current === 'dark' ? 'light' : 'dark');
-  }
-
-  // Apply on load
-  applyTheme(getInitialTheme());
-</script>
-
 
 <!-- MARKETS -->
 <section id="markets" class="markets-section">
