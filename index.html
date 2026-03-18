@@ -20,6 +20,20 @@
     --transition-theme: background 0.35s ease, color 0.35s ease, border-color 0.35s ease;
   }
 
+  
+  /* Dark mode uses the same variable palette to keep contrast consistent. */
+  [data-theme="dark"] {
+    --ink: #f1ede6;
+    --cream: #0f1011;
+    --warm: #191a1c;
+    --accent: #ff6a2a;
+    --gold: #e0b85e;
+    --steel: #c6beb2;
+    --light-ink: #e8e2da;
+    --border: #2a2b2e;
+    --nav-bg: rgba(15,16,17,0.90);
+  }
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   html { scroll-behavior: smooth; }
@@ -77,7 +91,75 @@
 
   nav ul a:hover { color: var(--accent); }
 
-  /* ── HERO ── */
+  
+  /* THEME TOGGLE */
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.4rem 0.9rem 0.4rem 0.55rem;
+    background: transparent;
+    border: 1.5px solid var(--border);
+    border-radius: 999px;
+    cursor: pointer;
+    color: var(--steel);
+    transition: border-color 0.25s, background 0.25s, color 0.25s;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+
+  .theme-toggle .toggle-track {
+    width: 34px;
+    height: 18px;
+    background: var(--border);
+    border-radius: 999px;
+    position: relative;
+    transition: background 0.3s;
+    flex-shrink: 0;
+  }
+
+  .theme-toggle .toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--cream);
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.3s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+  }
+
+  [data-theme="dark"] .theme-toggle .toggle-track { background: var(--accent); }
+  [data-theme="dark"] .theme-toggle .toggle-thumb { transform: translateX(16px); background: #fff; }
+
+  .theme-toggle .toggle-icon {
+    font-size: 0.95rem;
+    line-height: 1;
+    transition: transform 0.4s ease;
+  }
+
+  [data-theme="dark"] .theme-toggle .toggle-icon { transform: rotate(180deg); }
+
+  .toggle-label-light { display: inline; }
+  .toggle-label-dark  { display: none; }
+  [data-theme="dark"] .toggle-label-light { display: none; }
+  [data-theme="dark"] .toggle-label-dark  { display: inline; }
+
+  /* HERO */
   .hero {
     min-height: 100vh;
     display: grid;
@@ -740,6 +822,66 @@
   .delay-3 { animation-delay: 0.45s; opacity: 0; }
   .delay-4 { animation-delay: 0.6s; opacity: 0; }
 
+
+  /* INTERACTIONS (PROFESSIONAL) */
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    filter: blur(0px);
+    transition: opacity 520ms ease, transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+
+  .reveal.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal.reveal--soft {
+    transform: translateY(10px);
+    transition-duration: 460ms;
+  }
+
+  .reveal.reveal--scale {
+    transform: translateY(10px) scale(0.985);
+  }
+
+  .reveal.reveal--scale.in-view {
+    transform: translateY(0) scale(1);
+  }
+
+  /* Micro-interactions */
+  .btn-primary,
+  .btn-outline,
+  .service-card,
+  .project-card,
+  .market-card {
+    transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease, border-color 220ms ease, color 220ms ease;
+  }
+
+  .btn-primary:active,
+  .btn-outline:active {
+    transform: translateY(1px);
+  }
+
+  .service-card:hover,
+  .project-card:hover,
+  .market-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(0,0,0,0.08);
+  }
+
+  [data-theme="dark"] .service-card:hover,
+  [data-theme="dark"] .project-card:hover,
+  [data-theme="dark"] .market-card:hover {
+    box-shadow: 0 16px 34px rgba(0,0,0,0.45);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
     nav { padding: 1.2rem 2rem; }
@@ -758,6 +900,8 @@
     .container { padding: 0 2rem; }
     footer { flex-direction: column; gap: 0.5rem; text-align: center; }
     .skills-grid { grid-template-columns: 1fr; }
+    .theme-toggle .toggle-label-light,
+    .theme-toggle .toggle-label-dark { display: none; }
   }
 </style>
 </head>
@@ -774,6 +918,12 @@
     <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
+  <button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle dark mode">
+    <span class="toggle-track" aria-hidden="true"><span class="toggle-thumb"></span></span>
+    <span class="toggle-icon" aria-hidden="true">☀️</span>
+    <span class="toggle-label-light">Light</span>
+    <span class="toggle-label-dark">Dark</span>
+  </button>
 </nav>
 
 <!-- HERO -->
@@ -1026,6 +1176,84 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') closeService();
 });
 </script>
+
+<script>
+  const html = document.documentElement;
+
+  function getInitialTheme() {
+    const saved = localStorage.getItem('nmk-theme');
+    if (saved === 'dark' || saved === 'light') return saved;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function applyTheme(theme) {
+    html.setAttribute('data-theme', theme);
+    localStorage.setItem('nmk-theme', theme);
+    const icon = document.querySelector('.toggle-icon');
+    if (icon) icon.textContent = theme === 'dark' ? 'Dark' : 'Light';
+  }
+
+  function toggleTheme() {
+    const current = html.getAttribute('data-theme') || 'light';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  applyTheme(getInitialTheme());
+</script>
+<script>
+  (function () {
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+
+    const targets = Array.from(document.querySelectorAll([
+      '.section-label',
+      '.section-title',
+      '.service-card',
+      '.market-card',
+      '.project-card',
+      '.exp-item',
+      '.skill-item',
+      '.contact-card',
+      'footer'
+    ].join(',')));
+
+    if (!targets.length) return;
+
+    // Mark as reveal targets
+    targets.forEach((el) => {
+      if (!el.classList.contains('reveal')) el.classList.add('reveal');
+      // Slight variety keeps it lively but still professional
+      if (el.classList.contains('project-card') || el.classList.contains('service-card')) el.classList.add('reveal--scale');
+      else el.classList.add('reveal--soft');
+    });
+
+    // Stagger within common grid containers
+    const staggerGroups = ['.services-grid', '.markets-grid', '.projects-grid', '.skills-grid'];
+    staggerGroups.forEach((sel) => {
+      document.querySelectorAll(sel).forEach((grid) => {
+        const kids = Array.from(grid.children);
+        kids.forEach((child, i) => {
+          if (child && child.style) child.style.transitionDelay = `${Math.min(i * 70, 280)}ms`;
+        });
+      });
+    });
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add('in-view');
+            io.unobserve(e.target);
+          }
+        }
+      },
+      { root: null, threshold: 0.12, rootMargin: '0px 0px -10% 0px' }
+    );
+
+    targets.forEach((el) => io.observe(el));
+  })();
+</script>
+
 
 <!-- MARKETS -->
 <section id="markets" class="markets-section">
